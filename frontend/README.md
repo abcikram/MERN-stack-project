@@ -94,3 +94,88 @@ auto - for classes that set the margin to auto
 
 
 //======================================================================================
+
+import React ,{useState,useEffect} from 'react'
+import { Row, Col } from 'react-bootstrap'
+import Product from '../components/Product'
+import axios from 'axios'
+
+
+const HomeScreen = () => {
+  const [products,setProducts] = useState([])
+  
+  useEffect(() =>{
+    const fetchProducts = async () => {
+      const {data} = await axios.get('api/products')
+      
+      setProducts(data)
+    }
+    fetchProducts()
+  },[])
+
+  return (
+    <>
+      <h1>
+        <br />
+        Latest products</h1>
+      <Row>
+        {products.map(product => (
+          <Col sm={12} md={6} lg={4} xl={3}>
+            <Product product={product} />
+          </Col>
+        ))}
+      </Row>
+    </>
+  )
+}
+
+export default HomeScreen;
+
+//==============================   13-03-2023 =================================/
+
+/============== using axios.get Method ================//
+we use axios.get('api/products') to acces backend so thay why we use  "proxy": "http://127.0.0.1:5000"  // basically that is localhost:5000
+
+
+The encodeURIComponent() :-  
+      function encodes a URI by replacing each instance of certain characters by one, two, three, or four escape sequences representing the UTF-8 encoding of the character (will only be four escape sequences for characters composed of two surrogate characters).
+
+
+
+ProductScreen.js :-
+using state , axios to connect backend .
+
+const ProductScreen = () => {
+
+  const [product, setProduct] = useState({})
+  const { id } = useParams()
+
+  useEffect(() => {
+    axios.get(`/api/products/${encodeURIComponent(id)}`).then((response) => {
+
+      setProduct(response.data)
+    })
+
+  }, [id]) .........
+
+}
+
+/////=======  or we use using async await :-
+
+import { useParams } from "react-router-dom";
+
+const ProductScreen = () => {
+  const [product, setProduct] = useState({})
+  const { id } = useParams()
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get(`/api/products/${encodeURIComponent(id)}`)
+      setProduct(data)
+    }
+
+    fetchProduct()
+  }, [ id ]) 
+
+}
+
